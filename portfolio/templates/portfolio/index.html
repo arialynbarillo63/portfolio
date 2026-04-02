@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% if profile %}{{ profile.name }}{% else %}Arialyn Barillo{% endif %} — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'portfolio/css/style.css' %}">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="nav-logo">
+      {% if profile %}{{ profile.name.split.0 }}{% else %}Arialyn{% endif %}<span>.</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+  </nav>
+
+  <!-- FLASH MESSAGES -->
+  {% if messages %}
+  <div class="flash-messages">
+    {% for message in messages %}
+    <div class="flash flash--{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-text">
+      <p class="hero-greeting">Welcome to my portfolio</p>
+      <h1 class="hero-name">
+        {% if profile %}
+          {{ profile.name.split.0 }}<br><em>{{ profile.name.split.1 }}</em>
+        {% else %}
+          Arialyn<br><em>Barillo</em>
+        {% endif %}
+      </h1>
+      <p class="hero-tagline">
+        {% if profile %}{{ profile.tagline }}{% else %}Computer Science student with a passion for building meaningful digital experiences, one line of code at a time.{% endif %}
+      </p>
+      <a href="#projects" class="hero-cta">View my work</a>
+    </div>
+    <div class="hero-photo-frame">
+      <div class="photo-wrapper">
+        {% if profile and profile.photo %}
+          <img src="{{ profile.photo.url }}" alt="{{ profile.name }}" class="profile-photo">
+        {% else %}
+          <div class="photo-placeholder">
+            <div class="initials">AB</div>
+            <div class="photo-label">Profile Photo</div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <span class="section-label">About me</span>
+    <div class="about-grid">
+      <h2 class="about-heading">Curious mind.<br>Creative <em>coder.</em></h2>
+      <div>
+        <p class="about-text">
+          {% if profile %}{{ profile.bio }}{% else %}Hi, I'm Arialyn — a Computer Science student based in the Philippines, passionate about solving real-world problems through thoughtful software development. I enjoy working on projects that blend logic with creativity, from web applications to data-driven tools.{% endif %}
+        </p>
+        <div class="about-goals">
+          <div class="about-goals-title">Career goals</div>
+          <p>{% if profile %}{{ profile.career_goals }}{% else %}To become a software developer who builds tools that are not only functional, but genuinely useful and elegant to use.{% endif %}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="skills" id="skills">
+    <span class="section-label">Skills</span>
+    <h2 class="skills-heading">What I work with</h2>
+    <p class="skills-intro">A snapshot of the tools, languages, and technologies I've been developing through coursework and personal projects.</p>
+    <div class="skills-grid">
+      {% if skills %}
+        {% for skill in skills %}
+        <div class="skill-item">
+          <div class="skill-name">{{ skill.name }}</div>
+          <div class="skill-bar-track">
+            <div class="skill-bar-fill" style="width: {{ skill.percentage }}%"></div>
+          </div>
+          <div class="skill-level">{{ skill.level }}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        {% for skill_data in "Python,80,Proficient|Django,65,Intermediate|HTML / CSS,85,Proficient|JavaScript,60,Intermediate|MySQL,70,Proficient|GitHub,75,Proficient|Bootstrap,65,Intermediate|Problem Solving,90,Strong"|split:"|" %}
+        <div class="skill-item">
+          <div class="skill-name">{{ skill_data|cut:"|" }}</div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%"></div></div>
+          <div class="skill-level">Proficient</div>
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="projects" id="projects">
+    <span class="section-label">Projects</span>
+    <h2 class="projects-heading">Things I have built</h2>
+    <p class="projects-intro">A selection of academic and personal projects that demonstrate my skills in development and problem-solving.</p>
+    <div class="projects-grid">
+      {% if projects %}
+        {% for project in projects %}
+        <div class="project-card">
+          <div class="project-number">0{{ forloop.counter }}</div>
+          <div class="project-title">{{ project.title }}</div>
+          <div class="project-desc">{{ project.description }}</div>
+          <div class="project-tags">
+            {% for tool in project.get_tools_list %}
+            <span class="tag">{{ tool }}</span>
+            {% endfor %}
+          </div>
+          {% if project.github_link %}
+          <a href="{{ project.github_link }}" target="_blank" class="project-link">View on GitHub</a>
+          {% endif %}
+          {% if project.live_link %}
+          <a href="{{ project.live_link }}" target="_blank" class="project-link">Live Demo</a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="project-card">
+          <div class="project-number">01</div>
+          <div class="project-title">Personal Portfolio Website</div>
+          <div class="project-desc">A dynamic portfolio website built with Django showcasing personal information, projects, and skills. Deployed on PythonAnywhere.</div>
+          <div class="project-tags">
+            <span class="tag">Django</span><span class="tag">Python</span><span class="tag">HTML/CSS</span><span class="tag">MySQL</span>
+          </div>
+          <a href="#" class="project-link">View on GitHub</a>
+        </div>
+        <div class="project-card">
+          <div class="project-number">02</div>
+          <div class="project-title">Student Record System</div>
+          <div class="project-desc">A CRUD-based web application for managing student records, including enrollment details and grades, built as a database systems project.</div>
+          <div class="project-tags">
+            <span class="tag">Python</span><span class="tag">MySQL</span><span class="tag">Flask</span>
+          </div>
+          <a href="#" class="project-link">View on GitHub</a>
+        </div>
+        <div class="project-card">
+          <div class="project-number">03</div>
+          <div class="project-title">Library Book Tracker</div>
+          <div class="project-desc">A command-line application for tracking book checkouts and returns, with search and availability features for a local library use case.</div>
+          <div class="project-tags">
+            <span class="tag">Python</span><span class="tag">SQLite</span><span class="tag">CLI</span>
+          </div>
+          <a href="#" class="project-link">View on GitHub</a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="education" id="education">
+    <span class="section-label">Education</span>
+    <h2 class="education-heading">Academic background</h2>
+    {% if education %}
+      {% for edu in education %}
+      <div class="edu-entry">
+        <div class="edu-year">{{ edu.year_start }}{% if edu.year_end %} – {{ edu.year_end }}{% endif %}</div>
+        <div>
+          <div class="edu-school">{{ edu.school }}</div>
+          <div class="edu-degree">{{ edu.degree }}</div>
+          {% if edu.description %}<div class="edu-desc">{{ edu.description }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="edu-entry">
+        <div class="edu-year">Present</div>
+        <div>
+          <div class="edu-school">University / School Name</div>
+          <div class="edu-degree">Bachelor of Science in Computer Science</div>
+          <div class="edu-desc">Focused on software development, data structures, algorithms, and web technologies. Active member of the Computer Science student organization.</div>
+        </div>
+      </div>
+      <div class="edu-entry">
+        <div class="edu-year">2021 – 2023</div>
+        <div>
+          <div class="edu-school">Senior High School</div>
+          <div class="edu-degree">STEM Strand</div>
+          <div class="edu-desc">Completed senior high school under the Science, Technology, Engineering, and Mathematics strand, building a strong foundation for technical studies.</div>
+        </div>
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <span class="section-label">Contact</span>
+    <h2 class="contact-heading">Let's get in <em>touch.</em></h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-links">
+          <div class="contact-link-row">
+            <div class="contact-link-label">Email</div>
+            <a href="mailto:{% if profile %}{{ profile.email }}{% else %}arialyn@email.com{% endif %}" class="contact-link-value">
+              {% if profile %}{{ profile.email }}{% else %}arialyn@email.com{% endif %}
+            </a>
+          </div>
+          {% if profile and profile.github %}
+          <div class="contact-link-row">
+            <div class="contact-link-label">GitHub</div>
+            <a href="{{ profile.github }}" target="_blank" class="contact-link-value">{{ profile.github }}</a>
+          </div>
+          {% else %}
+          <div class="contact-link-row">
+            <div class="contact-link-label">GitHub</div>
+            <a href="#" class="contact-link-value">github.com/arialynbarillo</a>
+          </div>
+          {% endif %}
+          {% if profile and profile.linkedin %}
+          <div class="contact-link-row">
+            <div class="contact-link-label">LinkedIn</div>
+            <a href="{{ profile.linkedin }}" target="_blank" class="contact-link-value">{{ profile.linkedin }}</a>
+          </div>
+          {% else %}
+          <div class="contact-link-row">
+            <div class="contact-link-label">LinkedIn</div>
+            <a href="#" class="contact-link-value">linkedin.com/in/arialynbarillo</a>
+          </div>
+          {% endif %}
+          <div class="contact-link-row">
+            <div class="contact-link-label">Location</div>
+            <span class="contact-link-value contact-location">{% if profile %}{{ profile.location }}{% else %}Philippines{% endif %}</span>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form" method="POST" action="#contact">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label" for="name">Your name</label>
+          <input type="text" id="name" name="name" class="form-input" placeholder="Juan dela Cruz" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Your email</label>
+          <input type="email" id="email" name="email" class="form-input" placeholder="juan@email.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="message">Message</label>
+          <textarea id="message" name="message" class="form-input" placeholder="Say hello..." required></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send message</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    Designed and built by <span>{% if profile %}{{ profile.name }}{% else %}Arialyn Barillo{% endif %}</span> &mdash; ITS 305 Midterm Project
+  </footer>
+
+  <script src="{% static 'portfolio/js/main.js' %}"></script>
+</body>
+</html>
